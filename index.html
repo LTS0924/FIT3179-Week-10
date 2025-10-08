@@ -8,6 +8,9 @@
   <style>
     body { font-family: Arial, Helvetica, sans-serif; margin: 20px; }
     h1 { margin-bottom: 18px; text-align: center;}
+    /* extra spacing for visualization titles */
+    .vis-container h2 { margin-bottom: 8px; }
+    #tourism-title { margin-bottom: 28px; } /* increased gap for the tourism viz */
     /* vertical (stacked) layout: visualisations one above the other */
     .grid {
       display: flex;
@@ -22,7 +25,7 @@
       margin: 0 auto;
       box-sizing: border-box;
     }
-    .vis-box { border: 0; padding: 0; }
+    .vis-box { border: 0; padding: 8px 0 0 0; } /* add top padding so embedded svgs have breathing room */
     /* ensure the viz areas have reasonable minimum heights */
     #vis-left { min-height: 420px; }
     #vis-right { min-height: 320px; }
@@ -47,7 +50,7 @@
     </div>
 
     <div class="vis-container">
-      <h2 style="font-size:1rem; margin-bottom:8px;">Inbound Tourism Expenditure</h2>
+      <h2 id="tourism-title" style="font-size:1rem;">Inbound Tourism Expenditure</h2>
       <div id="vis-right" class="vis-box">Loading tourism chart…</div>
     </div>
   </div>

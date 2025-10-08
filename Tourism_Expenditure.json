@@ -1,15 +1,23 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "description": "Inbound Tourism Expenditure of Excursionist by Products - toggle industries to view expenditure by year.",
-  "title": "Inbound Tourism Expenditure of Excursionist by Products",
+  "title": {
+    "text": "Inbound Tourism Expenditure of Excursionist by Products",
+    "anchor": "middle",
+    "fontSize": 14,
+    "offset": 28
+  },
+  "autosize": { "type": "pad", "contains": "padding" },
+  "padding": { "top": 40 },
   "data": {
     "url": "https://raw.githubusercontent.com/LTS0924/FIT3179-Week-10/refs/heads/main/Inbound%20Tourism%20Expenditure%20of%20Excursionist%20by%20Products.csv"
   },
   "width": 600,
   "height": 240,
-
   "transform": [
     { "fold": ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024"], "as": ["year","expenditure"] },
+    { "calculate": "toNumber(datum.expenditure)", "as": "exp_num" },
+    { "joinaggregate": [{"op":"max","field":"exp_num","as":"max_exp"}], "groupby": ["Industry"] },
     { "filter": "datum.Industry == industry" }
   ],
   "params": [
@@ -32,17 +40,54 @@
       }
     }
   ],
+  "layer": [
+    {
+      "mark": { "type": "line", "interpolate": "monotone" },
+      "encoding": {
+        "x": { "field": "year", "type": "ordinal", "title": "Year", "sort": ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024"] },
+        "y": { "field": "exp_num", "type": "quantitative", "title": "Expenditure (AUD)" },
+        "color": { "field": "Industry", "type": "nominal", "title": "Industry", "scale": { "scheme": "category10" } }
+      }
+    },
 
-  "mark": { "type": "line", "interpolate": "monotone", "point": true },
+    {
+      "mark": { "type": "point", "filled": true, "size": 60 },
+      "encoding": {
+        "x": { "field": "year", "type": "ordinal", "sort": ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024"] },
+        "y": { "field": "exp_num", "type": "quantitative" },
+        "color": { "field": "Industry", "type": "nominal", "scale": { "scheme": "category10" } },
+        "tooltip": [
+          {"field": "Industry", "type": "nominal", "title": "Industry"},
+          {"field": "year", "type": "ordinal", "title": "Year"},
+          {"field": "exp_num", "type": "quantitative", "title": "Expenditure"}
+        ]
+      }
+    },
 
-  "encoding": {
-    "x": { "field": "year", "type": "ordinal", "title": "Year", "sort": ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024"] },
-    "y": { "field": "expenditure", "type": "quantitative", "title": "Expenditure (AUD)" },
-    "color": { "field": "Industry", "type": "nominal", "title": "Industry", "scale": { "scheme": "category10" } },
-    "tooltip": [
-      {"field": "Industry", "type": "nominal", "title": "Industry"},
-      {"field": "year", "type": "ordinal", "title": "Year"},
-      {"field": "expenditure", "type": "quantitative", "title": "Expenditure"}
-    ]
-  }
+    {
+      "transform": [{ "filter": "datum.exp_num == datum.max_exp" }],
+      "mark": { "type": "point", "filled": true, "size": 160 },
+      "encoding": {
+        "x": { "field": "year", "type": "ordinal", "sort": ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024"] },
+        "y": { "field": "exp_num", "type": "quantitative" },
+        "color": { "field": "Industry", "type": "nominal", "scale": { "scheme": "category10" } },
+        "tooltip": [
+          {"field": "Industry", "type": "nominal", "title": "Industry"},
+          {"field": "year", "type": "ordinal", "title": "Peak year"},
+          {"field": "exp_num", "type": "quantitative", "title": "Peak expenditure"}
+        ]
+      }
+    },
+
+    {
+      "transform": [{ "filter": "datum.exp_num == datum.max_exp" }],
+      "mark": { "type": "text", "dy": -18, "fontWeight": "bold", "fontSize": 12 },
+      "encoding": {
+        "x": { "field": "year", "type": "ordinal", "sort": ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024"] },
+        "y": { "field": "exp_num", "type": "quantitative" },
+        "text": { "value": "Highest" },
+        "color": { "value": "black" }
+      }
+    }
+  ]
 }
