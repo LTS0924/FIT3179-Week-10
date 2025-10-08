@@ -1,0 +1,134 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "GDP (Nominal USD) by State in Malaysia (2024)",
+  "width": 950,
+  "height": 350,
+  "projection": {
+    "type": "mercator",
+    "center": [109.45, 4],
+    "scale": 2750
+  },
+
+  "params": [
+    {
+      "name": "state",
+      "value": "",
+      "bind": {
+        "input": "select",
+        "name": "State",
+        "options": ["","Kedah","Perak","Perlis","Pulau Pinang","Negeri Sembilan","Kelantan","Melaka","Sabah","Pahang","Selangor","Johor","Kuala Lumpur","Sarawak","Terengganu","Labuan","Putrajaya"],
+        "labels": ["(all)","Kedah","Perak","Perlis","Pulau Pinang","Negeri Sembilan","Kelantan","Melaka","Sabah","Pahang","Selangor","Johor","Kuala Lumpur","Sarawak","Terengganu","Labuan","Putrajaya"]
+      }
+    }
+  ],
+
+  "layer": [
+    { "data": { "sphere": true }, "mark": { "type": "geoshape", "fill": "#f7fbfd" } },
+
+    {
+      "data": { "graticule": { "step": [5, 5] } },
+      "mark": {
+        "type": "geoshape",
+        "fill": null,
+        "stroke": "#e9eef2",
+        "strokeWidth": 1,
+        "opacity": 0.9
+      }
+    },
+
+    {
+      "data": { "graticule": { "step": [30, 10] } },
+      "mark": {
+        "type": "geoshape",
+        "fill": null,
+        "stroke": "#d6dbe0",
+        "strokeWidth": 1.0,
+        "opacity": 1.0
+      }
+    },
+
+    {
+      "data": {
+        "values": {
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [[99.5, -5], [99.5, 20]]
+              }
+            }
+          ]
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": null,
+        "stroke": "#4fb0e0",
+        "strokeWidth": 1,
+        "opacity": 0.95
+      }
+    },
+
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/LTS0924/FIT3179/refs/heads/main/Malaysia.topojson", 
+        "format": { "type": "topojson", "feature": "my" }
+      },
+      "transform": [
+        {
+          "lookup": "properties.name",
+            "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/LTS0924/FIT3179/refs/heads/main/GDP_contribution.csv",
+              "format": { "type": "csv" }
+            },
+            "key": "State",
+            "fields": ["Contribution"]
+          },
+          "default": null
+        },
+        {
+          "calculate": "toNumber(datum[\"Contribution\"])",
+          "as": "Contribution"
+        },
+        {
+          "filter": "(!state) || (state && datum.properties && datum.properties.name === state)"
+        }
+      ],
+      "mark": { "type": "geoshape", "stroke": "white", "strokeWidth": 1 },
+      "encoding": {
+        "color": {
+          "condition": {
+            "test": "datum.Contribution == null || isNaN(datum.Contribution)",
+            "value": "#efefef"
+          },
+          "field": "Contribution",
+          "type": "quantitative",
+          "scale": { "domain": [0, 30], "scheme": "reds" },
+          "legend": { "title": "Contribution to Malaysia's GDP (%)", "orient": "right" }
+        },
+        "opacity": { "value": 1 },
+        "tooltip": [
+          { "field": "properties.name", "type": "nominal", "title": "State" },
+          { "field": "Contribution", "type": "quantitative", "title": "Contribution to Malaysia's GDP (%)", "format": ".1f" }
+        ]
+      }
+    },
+    {
+      "data": { "values": [{ "range": "31-100" }] },
+      "mark": { "type": "point", "opacity": 0 },
+      "encoding": {
+        "color": {
+          "field": "range",
+          "type": "nominal",
+          "scale": { "domain": ["31-100"], "range": ["#ffffff"] },
+          "legend": { "title": "31-100 (unused)", "orient": "right" }
+        }
+      }
+    }
+  ],
+
+  "resolve": { "legend": { "color": "independent" } }
+}

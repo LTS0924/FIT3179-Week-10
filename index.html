@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GDP in Malaysia</title>
+
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin: 20px; }
+    h1 { margin-bottom: 18px; }
+    /* vertical (stacked) layout: visualisations one above the other */
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      align-items: stretch;
+      justify-content: flex-start;
+    }
+    .vis-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    .vis-box { border: 0; padding: 0; }
+    /* ensure the viz areas have reasonable minimum heights */
+    #vis-left { min-height: 420px; }
+    #vis-right { min-height: 320px; }
+    @media (max-width: 800px) {
+      #vis-left, #vis-right { min-height: 260px; }
+      .vis-container { padding: 0 10px; }
+    }
+  </style>
+
+  <!-- Vega / Vega-Lite / vega-embed from CDN (fixed versions) -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.5.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.21.0"></script>
+</head>
+<body>
+  <h1>GDP in Malaysia</h1>
+
+  <div class="grid">
+    <div class="vis-container">
+      <h2 style="font-size:1rem; margin-bottom:8px;">Choropleth (States)</h2>
+      <div id="vis-left" class="vis-box">Loading choropleth…</div>
+    </div>
+
+    <div class="vis-container">
+      <h2 style="font-size:1rem; margin-bottom:8px;">Inbound Tourism Expenditure</h2>
+      <div id="vis-right" class="vis-box">Loading tourism chart…</div>
+    </div>
+  </div>
+
+  <script>
+    // helper to fetch a JSON Vega(-Lite) spec and embed it
+    function embedSpec(containerSelector, specPath, embedOpts = {actions: false}) {
+      const el = document.querySelector(containerSelector);
+      fetch(specPath)
+        .then(resp => {
+          if (!resp.ok) throw new Error('Failed to load ' + specPath + ' — ' + resp.statusText);
+          return resp.json();
+        })
+        .then(spec => vegaEmbed(containerSelector, spec, embedOpts))
+        .then(() => console.log('Embedded', specPath))
+        .catch(err => {
+          console.error(err);
+          if (el) el.innerHTML = '<pre style="color:crimson">Error loading ' + specPath + ':\n' + (err && err.message ? err.message : err) + '</pre>';
+        });
+    }
+
+    // embed top (choropleth) and bottom (tourism) charts
+    embedSpec('#vis-left', './mine_choropleth_map.vg.json', {actions: false});
+    embedSpec('#vis-right', './Tourism_Expenditure.json', {actions: true});
+  </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Inbound Tourism Expenditure — Vega-Lite</title>
+		<style>
+			body { font-family: Arial, Helvetica, sans-serif; margin: 20px; }
+			#vis { max-width: 800px; margin: 0 auto; }
+			.credits { max-width: 1000px; margin: 8px auto; color: #555; font-size: 0.9rem }
+		</style>
+	</head>
+	<body>
+		<h2>Inbound Tourism Expenditure of Excursionist by Products</h2>
+		<div id="vis"></div>
+		<!-- credits removed as requested -->
+
+			<!-- Vega / Vega-Lite / vega-embed from CDN (locked to versions similar to your previous file) -->
+			<script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+			<script src="https://cdn.jsdelivr.net/npm/vega-lite@5.5.0"></script>
+			<script src="https://cdn.jsdelivr.net/npm/vega-embed@6.21.0"></script>
+
+			<script>
+				// Fetch the JSON spec and embed the parsed object.
+				// Note: Browsers require HTTP/HTTPS to fetch local files; run a local server when testing.
+				fetch('./Tourism_Expenditure.json')
+					.then(response => {
+						if (!response.ok) throw new Error('Failed to load spec: ' + response.statusText);
+						return response.json();
+					})
+					.then(spec => vegaEmbed('#vis', spec, {actions: true}))
+					.then(result => console.log('Visualization rendered', result))
+					.catch(err => {
+						const el = document.getElementById('vis');
+						el.innerHTML = '<pre style="color:crimson">Error rendering visualization:\n' + (err && err.message ? err.message : err) + '</pre>';
+						console.error(err);
+					});
+			</script>
+	</body>
+</html>

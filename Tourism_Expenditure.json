@@ -1,0 +1,48 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Inbound Tourism Expenditure of Excursionist by Products - toggle industries to view expenditure by year.",
+  "title": "Inbound Tourism Expenditure of Excursionist by Products",
+  "data": {
+    "url": "https://raw.githubusercontent.com/LTS0924/FIT3179-Week-10/refs/heads/main/Inbound%20Tourism%20Expenditure%20of%20Excursionist%20by%20Products.csv"
+  },
+  "width": 600,
+  "height": 240,
+
+  "transform": [
+    { "fold": ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024"], "as": ["year","expenditure"] },
+    { "filter": "datum.Industry == industry" }
+  ],
+  "params": [
+    {
+      "name": "industry",
+      "value": "Accommodation services",
+      "bind": {
+        "input": "select",
+        "name": "Industry: ",
+        "options": [
+          "Accommodation services",
+          "Food and beverage serving services",
+          "Passenger transport services",
+          "Travel agencies and other reservation services",
+          "Cultural, sports and recreational services",
+          "Retail sale of automotive fuel",
+          "Country-specific tourism characteristic goods",
+          "Country-specific tourism characteristic services"
+        ]
+      }
+    }
+  ],
+
+  "mark": { "type": "line", "interpolate": "monotone", "point": true },
+
+  "encoding": {
+    "x": { "field": "year", "type": "ordinal", "title": "Year", "sort": ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024"] },
+    "y": { "field": "expenditure", "type": "quantitative", "title": "Expenditure (AUD)" },
+    "color": { "field": "Industry", "type": "nominal", "title": "Industry", "scale": { "scheme": "category10" } },
+    "tooltip": [
+      {"field": "Industry", "type": "nominal", "title": "Industry"},
+      {"field": "year", "type": "ordinal", "title": "Year"},
+      {"field": "expenditure", "type": "quantitative", "title": "Expenditure"}
+    ]
+  }
+}
