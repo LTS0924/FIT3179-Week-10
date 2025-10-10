@@ -19,6 +19,14 @@
         "options": ["","Kedah","Perak","Perlis","Pulau Pinang","Negeri Sembilan","Kelantan","Melaka","Sabah","Pahang","Selangor","Johor","Kuala Lumpur","Sarawak","Terengganu","Labuan","Putrajaya"],
         "labels": ["(all)","Kedah","Perak","Perlis","Pulau Pinang","Negeri Sembilan","Kelantan","Melaka","Sabah","Pahang","Selangor","Johor","Kuala Lumpur","Sarawak","Terengganu","Labuan","Putrajaya"]
       }
+    },
+    {
+      "name": "hover_name",
+      "value": "",
+      "on": [
+        { "events": "mouseover", "update": "datum && datum.properties && datum.properties.name ? datum.properties.name : ''" },
+        { "events": "mouseout",  "update": "''" }
+      ]
     }
   ],
 
@@ -113,7 +121,21 @@
         "tooltip": [
           { "field": "properties.name", "type": "nominal", "title": "State" },
           { "field": "Contribution", "type": "quantitative", "title": "Contribution to Malaysia's GDP (%)", "format": ".1f" }
-        ]
+        ],
+        "stroke": {
+          "condition": {
+            "test": "hover_name !== '' && datum.properties && datum.properties.name === hover_name",
+            "value": "#333333"
+          },
+          "value": "white"
+        },
+        "strokeWidth": {
+          "condition": {
+            "test": "hover_name !== '' && datum.properties && datum.properties.name === hover_name",
+            "value": 3
+          },
+          "value": 1
+        }
       }
     },
     {
