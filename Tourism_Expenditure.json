@@ -45,7 +45,7 @@
       "mark": { "type": "line", "interpolate": "monotone" },
       "encoding": {
         "x": { "field": "year", "type": "ordinal", "title": "Year", "sort": ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024"] },
-        "y": { "field": "exp_num", "type": "quantitative", "title": "Expenditure (AUD)" },
+        "y": { "field": "exp_num", "type": "quantitative", "title": "Expenditure (RM Million))" },
         "color": { "field": "Industry", "type": "nominal", "title": "Industry", "scale": { "scheme": "category10" } }
       }
     },
